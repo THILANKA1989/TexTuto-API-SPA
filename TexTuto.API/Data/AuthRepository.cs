@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using TexTuto.API.Models;
+
 namespace TexTuto.API.Data{
     public class AuthRepository : IAuthRepository
     {
@@ -22,7 +27,7 @@ namespace TexTuto.API.Data{
         private void CreatePasswordHash(string password, out byte[] password_hash, out byte[] password_salt){
             using(var hmac = new System.Security.Cryptography.HMACSHA256()) {
                 password_salt = hmac.Key;
-                password_hash = hmac.ComputeHas(System.Text.Encoding.UTF8.GetBytes(password));
+                password_hash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
             
         }
@@ -42,13 +47,14 @@ namespace TexTuto.API.Data{
 
         public async Task<bool> VerifyPasswordHash(string password, byte[] password_hash, byte[]  password_salt){
             using(var hmac = new System.Security.Cryptography.HMACSHA256(password_salt)) {
-                var computedHash = hmac.ComputeHas(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 for (int i = 0;i<computedHash.Length;i++){
                     if(computedHash[i] != password_hash[i]){
                         return false;
                     }
                 }
             }
+            return true;
         }
         public async Task<bool> UserExists(string username){
             if(await _context.Users.AnyAsync(x=>x.username == username)){

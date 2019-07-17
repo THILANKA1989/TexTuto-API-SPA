@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using TexTuto.API.Data;
+using TexTuto.API.DTO;
+using TexTuto.API.Models;
+
 namespace TexTuto.API.Controllers
 {
 
@@ -12,18 +18,18 @@ namespace TexTuto.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(string username, string password){
-            username = username.ToLower();
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto){
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
-            if (await _repo.UserExists(username)){
+            if (await _repo.UserExists(userForRegisterDto.Username)){
                 return BadRequest("Username already exist");
             }
 
             var userToCreate = new User{
-                username = username
+                username = userForRegisterDto.Username
             };
 
-            var createdUser = await _repo.Register(userToCreate,password);
+            var createdUser = await _repo.Register(userToCreate,userForRegisterDto.Password);
 
             return StatusCode(201);
         }
