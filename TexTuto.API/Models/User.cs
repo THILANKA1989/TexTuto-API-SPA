@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Net;
 namespace TexTuto.API.Models
 {
     public class User
