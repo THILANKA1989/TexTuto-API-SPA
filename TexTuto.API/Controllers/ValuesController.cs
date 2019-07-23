@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TexTuto.API.Data;
 
 namespace TexTuto.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -36,6 +38,7 @@ namespace TexTuto.API.Controllers
         }
 
         // POST api/values
+        [AllowAnonymous]
         [HttpPost]
         public void Post([FromBody] string value)
         {

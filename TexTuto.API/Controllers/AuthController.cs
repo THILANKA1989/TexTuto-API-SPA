@@ -50,39 +50,48 @@ namespace TexTuto.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            //fetch user form credintials
-            User userFromRepo = await _repo.Login(userForLoginDto.Username , userForLoginDto.Password );
-            if(userFromRepo == null)
-                return Unauthorized();
-
-            //create claims with fetched user informations
-            var claims = new[]
+            try
             {
+                //fetch user form credintials
+                User userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.Password);
+                if (userFromRepo == null)
+                    return Unauthorized();
+
+                //create claims with fetched user informations
+                var claims = new[]
+                {
                     new Claim(ClaimTypes.NameIdentifier, userFromRepo.id.ToString()),
                     new Claim(ClaimTypes.Name, userFromRepo.username)
-            };
+                };
 
-            //create security key by using Secret token in appsettings
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+                //create security key by using Secret token in appsettings
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
 
-            //assign the security algorithm generate credentials
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+                //assign the security algorithm generate credentials
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.Now.AddDays(1),
+                    SigningCredentials = creds
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+
+                //create jwt token
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                return Ok(new
+                {
+                    token = tokenHandler.WriteToken(token)
+                });
+            }
+            catch (Exception ex)
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return Ok(new
-            {
-                token = tokenHandler.WriteToken(token)
-            });
+                throw ex;
+            }
+           
         }
     }
 }
