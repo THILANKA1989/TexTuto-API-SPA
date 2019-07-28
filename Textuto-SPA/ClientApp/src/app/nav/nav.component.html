@@ -4,9 +4,9 @@
       <div _ngcontent-gvw-c1="" class="col-4 pt-1"><a _ngcontent-gvw-c1="" class="text-muted" href="#">SignUp</a></div>
       <div _ngcontent-gvw-c1="" class="col-4 text-center"></div>
       <div _ngcontent-gvw-c1="" class="col-4 d-flex justify-content-end align-items-center">
-        <form _ngcontent-gvw-c1="" class="form-inline my-2 my-lg-0 ng-touched ng-dirty ng-valid" novalidate="">
-          <input _ngcontent-gvw-c1="" aria-label="Username" class="form-control mr-sm-2 ng-dirty ng-valid ng-touched" name="Username" placeholder="Username" required="" type="text" >
-          <input _ngcontent-gvw-c1="" aria-label="Password" class="form-control mr-sm-2 ng-touched ng-dirty ng-valid" name="Password" placeholder="Password" required="" type="password" >
+        <form _ngcontent-gvw-c1="" class="form-inline my-2 my-lg-0 ng-touched ng-dirty ng-valid" novalidate=""  (ngSubmit)="login()">
+          <input _ngcontent-gvw-c1="" aria-label="Username" class="form-control mr-sm-2 ng-dirty ng-valid ng-touched" name="Username" placeholder="Username" required="" type="text" [(ngModel)]="model.Username">
+          <input _ngcontent-gvw-c1="" aria-label="Password" class="form-control mr-sm-2 ng-touched ng-dirty ng-valid" name="Password" placeholder="Password" required="" type="password" [(ngModel)]="model.Password">
           <button _ngcontent-gvw-c1="" class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
         </form>
       </div>
